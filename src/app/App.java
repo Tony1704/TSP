@@ -13,6 +13,7 @@ public class App {
             nodes[i] = new Node((Math.random() * range), Math.random() * range, nodes[0]);
         }
 
+        // test
         DistanceMatrix distances = new DistanceMatrix(graph);
         System.out.println(distances.getDistanceById(nodes[0], nodes[1]));
         System.out.println(graph.getTotalDistance(distances));
