@@ -11,6 +11,10 @@ public class Graph {
         this.nodes = nodes;
     }
 
+    public Graph(int length) {
+        this.nodes = new Node[length];
+    }
+
     public Node getFirstNode(){
         if(nodes.length == 0) {
             return null;
