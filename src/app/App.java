@@ -14,8 +14,8 @@ public class App {
         }
 
         DistanceMatrix distances = new DistanceMatrix(graph);
-        // System.out.println(distances.getDistanceById(nodes[0], nodes[1]));
-        // System.out.println(graph.getTotalDistance(distances));
+
+        
         
         UI.runUI(nodes, graph.getTotalDistance(distances));
     }

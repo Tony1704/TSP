@@ -15,6 +15,9 @@ class MyPanel extends JPanel {
     int dimensionY = 750;
     int[][] linePath; 
 
+    private static final int width = 16;
+    private static final int height = 16;
+
     public MyPanel(Node[] nodes, double totalDistance) {
         setBorder(BorderFactory.createLineBorder(Color.black));
         this.nodes = nodes;
@@ -41,7 +44,8 @@ class MyPanel extends JPanel {
             linePath[i][0] = newX + 8;
             linePath[i][1] = newY + 8;
             System.out.println("X: " + newX + ", Y: " + newY);
-            g.drawOval(newX, newY, 16, 16);
+            // g.drawOval(newX, newY, width, height);
+            g.fillOval(newX, newY, width, height);
 
         }
 

@@ -53,35 +53,5 @@ public class Optimizer {
         return null;
     }
 
-    // private static DistanceMatrix distances;
-
-    // public static Graph mindDist(Node[] nodes, DistanceMatrix _distances, int
-    // strategy) {
-    // distances = _distances;
-    // Graph returnGraph = null;
-    // switch (strategy) {
-    // case Strategy.FIRST:
-    // returnGraph = new Graph(nodes.length);
-    // break;
-
-    // default:
-    // break;
-    // }
-    // return returnGraph;
-    // }
-
-    // private Graph removeCrossover(Node[] nodes, DistanceMatrix distances) {
-    // return null;
-    // }
-
-    // private Graph postOptimization(Node[] nodes, DistanceMatrix distances) {
-    // return null;
-    // }
-
-    // private Graph insertFirstMinDist(Node[] nodes) {
-    // Graph returnGraph = new Graph(nodes.length);
-
-    // for()
-    // }
 
 }
