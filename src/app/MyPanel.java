@@ -57,6 +57,8 @@ class MyPanel extends JPanel {
 
         // Draw Text
         // g.drawOval(400, 400, 16, 16);
+        // Round Total Distance
+        totalDistance = Math.round(totalDistance * 1000.0) / 1000.0;
         g.drawString("Total Distance: " + totalDistance, 10, 20);
     }
 }
