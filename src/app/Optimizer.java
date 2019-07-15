@@ -24,10 +24,10 @@ public class Optimizer {
         }
 
         if (removeCrossover) {
-            returnGraph = removeCrossover(nodes, distances);
+            returnGraph = removeCrossover(returnGraph, distances);
         }
         if (afterControl) {
-            returnGraph = afterControl(nodes, distances);
+            returnGraph = afterControl(returnGraph, distances);
         }
 
         return returnGraph;
@@ -50,7 +50,7 @@ public class Optimizer {
             for (int j = 1; j < path.length - 1; j++) {
                 double currentDistance = ((path[j] != null) ? distances.getDistanceById(path[j], nodes[i]) : 0)
                         + (path[j + 1] != null ? distances.getDistanceById(path[j + 1], nodes[i]) : 0);
-                if (shortestIndex == -1 || currentDistance < shortestDistance) {
+                if (shortestIndex == -1 || (currentDistance < shortestDistance && currentDistance > 0)) {
                     shortestIndex = j;
                     shortestDistance = currentDistance;
                 }
@@ -79,7 +79,8 @@ public class Optimizer {
             // skip the first one since it already is a part of the graph
             for (int j = 1; j < nodes.length; j++) {
                 double currentDistance = distances.getDistanceById(path[i - 1], nodes[j]);
-                if (!pathContainsNode(path, nodes[j]) && (shortestIndex == -1 || shortestDistance > currentDistance)) {
+                if (!pathContainsNode(path, nodes[j])
+                        && (shortestIndex == -1 || (currentDistance < shortestDistance && currentDistance > 0))) {
                     shortestIndex = j;
                     shortestDistance = currentDistance;
                 }
@@ -105,7 +106,8 @@ public class Optimizer {
             // Find Node Furthest Away from path[i - 1]
             for (int j = 0; j < nodes.length; j++) {
                 double currentDistance = distances.getDistanceById(nodes[j], path[i - 1]);
-                if (!pathContainsNode(path, nodes[j]) && (furthestIndex == -1 || furthestDistance < currentDistance)) {
+                if (!pathContainsNode(path, nodes[j])
+                        && (furthestIndex == -1 || (furthestDistance < currentDistance && currentDistance > 0))) {
                     furthestDistance = currentDistance;
                     furthestIndex = j;
                 }
@@ -121,7 +123,7 @@ public class Optimizer {
                         ? distances.getDistanceById(path[j - 1], nodes[furthestIndex])
                         : 0) + ((path[j] != null) ? distances.getDistanceById(path[j], nodes[furthestIndex]) : 0);
 
-                if (shortestIndex == -1 || shortestDistance > currentDistance) {
+                if (shortestIndex == -1 || (shortestDistance > currentDistance && currentDistance > 0)) {
                     shortestDistance = currentDistance;
                     shortestIndex = j;
                 }
@@ -133,17 +135,55 @@ public class Optimizer {
     }
 
     // Detects and removes Crossover in a given Graph
-    private static Graph removeCrossover(Node[] nodes, DistanceMatrix distances) {
+    private static Graph removeCrossover(Graph graph, DistanceMatrix distances) {
+        Node[] nodes = graph.getNodes();
+        for (Node n : nodes) {
+            if (n == null) {
+                System.out.println("(Partly) Empty graph");
+                System.exit(1);
+            }
+        }
+        for (int i = 1; i < nodes.length; i++) {
+            for (int j = 2; j < nodes.length; j++) {
+                // Skip if any of the Nodes would be the same Node, since that can't be a crossover 
+                if (!(i - 1 == j - 1 || i - 1 == j || i == j - 1 || i == j)) {
+                    Node nodeA1 = nodes[i - 1];
+                    Node nodeA2 = nodes[i];
+                    Node nodeB1 = nodes[j - 1];
+                    Node nodeB2 = nodes[j];
 
-        return null;
+                    // Construct routes of these nodes (A1 -> A2, B1 -> B2)
+                    // f(x) = mx + n
+
+                    // m = dy / dx
+                    double mA =Math.abs(nodeA1.getY() - nodeA2.getY()) / Math.abs(nodeA1.getX() - nodeA2.getX());
+                    double mB =Math.abs(nodeB1.getY() - nodeB2.getY()) / Math.abs(nodeB1.getX() - nodeB2.getX());
+
+                    // n = f(x) - mx
+                    double nA = nodeA1.getY() - (nodeA1.getX() * mA);
+                    double nB = nodeB1.getY() - (nodeB1.getX() * mA);
+
+                    // Construct crossing point of these functions to see, where they intersect
+                    double intersectX = (nA - nB) / (mA * mB);
+                    double intersectY = mA * intersectX + nA;
+
+                    // Now check this point of intersection is within a relevant area
+                    // TODO
+                }
+
+            }
+        }
+
+        return graph;
     }
 
     // Check if for any given Node a shorter total Distance can be achieved by
     // merging it into another path on the Graph
-    private static Graph afterControl(Node[] nodes, DistanceMatrix distances) {
+    private static Graph afterControl(Graph graph, DistanceMatrix distances) {
         return null;
     }
 
+    //
     private static Node[] mergeNodeIntoGraph(Node[] path, Node node, int index) {
         for (int i = path.length - 2; i >= index; i--) {
             // Node temp = path[i];
@@ -158,12 +198,6 @@ public class Optimizer {
         for (Node n : path) {
             if (node.getID() == (n != null ? n.getID() : -1)) {
                 return true;
-            }
-
-            if (n != null) {
-                if (n.getID() == node.getID()) {
-                    return true;
-                }
             }
         }
         return false;
