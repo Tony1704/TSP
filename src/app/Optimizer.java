@@ -24,7 +24,7 @@ public class Optimizer {
         }
 
         if (removeCrossover) {
-            returnGraph = removeCrossover(returnGraph, distances);
+            returnGraph = handleCrossover(returnGraph, distances);
         }
         if (afterControl) {
             returnGraph = afterControl(returnGraph, distances);
@@ -130,12 +130,12 @@ public class Optimizer {
             }
             path = mergeNodeIntoGraph(path, nodes[i], shortestIndex);
         }
-
-        return null;
+        Graph returnGraph = new Graph(path);
+        return returnGraph;
     }
 
     // Detects and removes Crossover in a given Graph
-    private static Graph removeCrossover(Graph graph, DistanceMatrix distances) {
+    private static Graph handleCrossover(Graph graph, DistanceMatrix distances) {
         Node[] nodes = graph.getNodes();
         for (Node n : nodes) {
             if (n == null) {
@@ -156,24 +156,36 @@ public class Optimizer {
                     // f(x) = mx + n
 
                     // m = dy / dx
-                    double mA =Math.abs(nodeA1.getY() - nodeA2.getY()) / Math.abs(nodeA1.getX() - nodeA2.getX());
-                    double mB =Math.abs(nodeB1.getY() - nodeB2.getY()) / Math.abs(nodeB1.getX() - nodeB2.getX());
+                    double mA = Math.abs(nodeA1.getY() - nodeA2.getY()) / Math.abs(nodeA1.getX() - nodeA2.getX());
+                    double mB = Math.abs(nodeB1.getY() - nodeB2.getY()) / Math.abs(nodeB1.getX() - nodeB2.getX());
 
                     // n = f(x) - mx
                     double nA = nodeA1.getY() - (nodeA1.getX() * mA);
                     double nB = nodeB1.getY() - (nodeB1.getX() * mA);
 
                     // Construct crossing point of these functions to see, where they intersect
-                    double intersectX = (nA - nB) / (mA * mB);
+                    double intersectX = (nB - nA) / (mA - mB);
                     double intersectY = mA * intersectX + nA;
 
                     // Now check this point of intersection is within a relevant area
                     // TODO
+                    if (((intersectX < nodeA1.getX() && intersectX > nodeA2.getX()) || (intersectX > nodeA1.getX() && intersectX < nodeA2.getX())) 
+                        && ((intersectX < nodeB1.getX() && intersectX > nodeB2.getX()) || (intersectX > nodeB1.getX() && intersectX < nodeB2.getX())) 
+                        && ((intersectY < nodeA1.getY() && intersectY > nodeA2.getY()) || (intersectY > nodeA1.getY() && intersectY < nodeA2.getY())) 
+                        && ((intersectY < nodeB1.getY() && intersectY > nodeB2.getY()) || (intersectY > nodeB1.getY() && intersectY > nodeB2.getY()))) {
+                            graph = removeCrossover(graph, nodeA2, nodeB1);
+                    }
                 }
 
             }
         }
 
+        return graph;
+    }
+
+    // Receives a Graph, that contains a Crossover 
+    // This Method will return the Graph with the Crossover resolved
+    private static Graph removeCrossover(Graph graph, Node nodeFrom, Node nodeTo) {
         return graph;
     }
 

@@ -66,5 +66,15 @@ public class Graph {
         nodes[indexOfA] = nodes[indexOfB];
         nodes[indexOfB] = tempA;
     }
+
+    public Node getNextNode(Node prevNode) {
+        int index = findNode(prevNode);
+        return index != nodes.length - 1 ? nodes[index + 1] : null;
+    }
+
+    public Node getPrevNode(Node sucNode) {
+        int index = findNode(sucNode);
+        return index != 0 ? nodes[index - 1] : null;
+    }
     
 }
