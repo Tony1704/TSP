@@ -4,7 +4,7 @@ package app;
  * Node
  */
 public class Node {
-    private double x;
+    private double lol;
     private double y;
     private int ID;
     private Node pickupNode;
